@@ -1,3 +1,4 @@
+import itertools
 import unittest
 from math import isclose, isfinite
 
@@ -115,6 +116,73 @@ class InstalledRobodynoModelTest(unittest.TestCase):
                 self.assertTrue(any(call[0] == "enable" for call in joints[0].calls))
                 self.assertTrue(any(call[0] == "disable" for call in joints[0].calls))
                 self.assertAlmostEqual(joints[0].pos, 0.25)
+
+    def test_four_dof_palletizing_fk_ik_batch_roundtrip(self):
+        robot = FourDoFPallet(FakeJoint(), FakeJoint(), FakeJoint(), FakeJoint(), 0.12, 0.10, 0.10, 0.04)
+        joint_cases = [
+            [0.0, 0.0, 0.0, 0.0],
+            [0.1, 0.2, -0.1, 0.3],
+            [0.2, -0.2, 0.1, -0.4],
+            [-0.3, 0.4, -0.2, 0.5],
+            [0.35, -0.35, 0.25, -0.6],
+        ]
+        for axes in joint_cases:
+            with self.subTest(axes=axes):
+                fk = robot.forward_kinematics(axes)
+                ik = robot.inverse_kinematics(*fk)
+                assert_finite_sequence(self, fk)
+                assert_finite_sequence(self, ik)
+                assert_sequences_close(self, robot.forward_kinematics(ik), fk)
+
+    def test_three_dof_delta_near_symmetric_workspace_grid(self):
+        robot = ThreeDoFDelta(FakeJoint(), FakeJoint(), FakeJoint(), 0.12, 0.28, 0.08, 0.03)
+        for axes in itertools.product([-0.12, 0.0, 0.12], repeat=3):
+            with self.subTest(axes=axes):
+                fk = robot.forward_kinematics(axes)
+                ik = robot.inverse_kinematics(*fk)
+                assert_finite_sequence(self, fk)
+                assert_finite_sequence(self, ik)
+                assert_sequences_close(self, robot.forward_kinematics(ik), fk)
+
+    def test_six_dof_collaborative_pose_batch_roundtrip(self):
+        robot = SixDoFCollabRobot(
+            FakeJoint(),
+            FakeJoint(),
+            FakeJoint(),
+            FakeJoint(),
+            FakeJoint(),
+            FakeJoint(),
+            0.10,
+            0.12,
+            0.12,
+            0.10,
+            0.08,
+            0.06,
+        )
+        joint_cases = [
+            [0.1, -0.2, 0.2, -0.1, 0.1, 0.2],
+            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+            [0.2, 0.1, -0.1, 0.3, -0.2, 0.1],
+            [-0.3, 0.2, 0.1, -0.2, 0.1, -0.1],
+        ]
+        for axes in joint_cases:
+            with self.subTest(axes=axes):
+                fk = robot.forward_kinematics(axes)
+                ik = robot.inverse_kinematics(*fk)
+                assert_finite_sequence(self, fk)
+                assert_finite_sequence(self, ik)
+                assert_sequences_close(self, robot.forward_kinematics(ik), fk, tolerance=1e-6)
+
+    def test_init_and_set_joint_pos_touch_expected_joints_only(self):
+        joints = [FakeJoint() for _ in range(4)]
+        robot = FourDoFPallet(*joints, 0.12, 0.10, 0.10, 0.04)
+        robot.init([0.1, -0.2, 0.3, -0.4])
+        assert_sequences_close(self, [joint.pos for joint in joints], [0.0, 0.0, 0.0, 0.0])
+
+        robot.set_joint_pos(2, 0.75)
+        assert_sequences_close(self, [joint.pos for joint in joints], [0.0, 0.0, 0.45, 0.0])
+        self.assertEqual([call[0] for call in joints[2].calls].count("set_pos"), 1)
+        self.assertEqual([call[0] for call in joints[0].calls].count("set_pos"), 0)
 
 
 if __name__ == "__main__":

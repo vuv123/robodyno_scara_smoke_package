@@ -69,6 +69,40 @@ class KinematicsStressTest(unittest.TestCase):
             self.assertLess(abs(pose_again[1] - base[1]), 1e-9)
             self.assertLess(abs(pose_again[2] - base[2]), 1e-9)
 
+    def test_workspace_boundary_roundtrip_cases(self):
+        cases = [
+            (-0.05, -1.45, 0.10, -math.pi),
+            (0.05, 1.45, 1.95, math.pi),
+            (0.0, -1.50, 1.80, 2.8),
+            (0.03, 1.50, 0.12, -2.8),
+        ]
+        for joints in cases:
+            with self.subTest(joints=joints):
+                pose = self.scara.forward_kinematics(*joints)
+                solved = self.scara.inverse_kinematics(*pose, hand_coordinate=joints[2] > 0)
+                self.assert_pose_close(self.scara.forward_kinematics(*solved), pose, tolerance=1e-8)
+
+    def test_unreachable_xy_position_returns_current_positions(self):
+        joints = [DummyJoint() for _ in range(4)]
+        for joint, position in zip(joints, [0.01, 0.02, 0.03, 0.04]):
+            joint.pos = position
+        scara = create_scara(joints)
+        self.assertEqual(scara.inverse_kinematics(10.0, 10.0, 0.0, 0.0), [0.01, 0.02, 0.03, 0.04])
+
+    def test_batch_joint_commands_preserve_last_commanded_positions(self):
+        joints = [DummyJoint() for _ in range(4)]
+        scara = create_scara(joints)
+        command_sequence = [
+            (0.0, 0.1, 0.2, 0.3),
+            (0.02, -0.4, 0.7, -0.8),
+            (-0.03, 0.5, -0.6, 0.9),
+        ]
+        for command in command_sequence:
+            scara.joint_space_interpolated_motion(command, duration=0)
+
+        for joint, expected in zip(joints, command_sequence[-1]):
+            self.assertAlmostEqual(joint.pos, expected)
+
 
 if __name__ == "__main__":
     unittest.main()

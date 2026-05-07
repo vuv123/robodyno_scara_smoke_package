@@ -103,6 +103,16 @@ class BoundaryAndLogTest(unittest.TestCase):
                 self.assertLess(errors[-1], errors[0])
                 self.assertLess(min(errors[-3:]), 0.09)
 
+    def test_scara_log_has_expected_target_order_after_convergence(self):
+        if not SCARA_LOG.exists():
+            self.skipTest("run_webots_smoke has not produced a log yet")
+        text = SCARA_LOG.read_text(encoding="utf-8")
+        convergence_matches = re.findall(r"SCARA_SMOKE: target\[(\d+)\] convergence ok", text)
+        self.assertEqual(convergence_matches, ["0", "1", "2"])
+        target_mentions = re.findall(r"target=(\d+) step=\d+ rc=0", text)
+        self.assertTrue(target_mentions)
+        self.assertEqual(sorted(set(target_mentions)), ["0", "1", "2"])
+
     def test_proto_smoke_log_has_no_errors(self):
         if not PROTO_LOG.exists():
             self.skipTest("run_webots_proto_smoke has not produced a log yet")

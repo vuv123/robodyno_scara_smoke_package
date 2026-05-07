@@ -136,6 +136,22 @@ class ScaraMethodCoverageTest(unittest.TestCase):
             self.assertLess(abs(actual - expected), 1e-9)
         self.assertLess(joints[2].pos, 0)
 
+    def test_cartesian_motion_roundtrips_handedness_switch(self):
+        scara, joints = self.make_scara()
+        left_source = (0.015, -0.28, -0.42, -0.18)
+        right_source = (0.015, -0.28, 0.42, -0.18)
+        left_pose = scara.forward_kinematics(*left_source)
+        right_pose = scara.forward_kinematics(*right_source)
+
+        with patch("robodyno.robots.four_dof_scara_robot.four_dof_scara_robot.time.sleep", return_value=None):
+            scara.cartesian_space_interpolated_motion(*left_pose, hand_coordinate=False, duration=0)
+            scara.cartesian_space_interpolated_motion(*right_pose, hand_coordinate=True, duration=0)
+
+        final_pose = scara.forward_kinematics(*[joint.pos for joint in joints])
+        for actual, expected in zip(final_pose, right_pose):
+            self.assertLess(abs(actual - expected), 1e-9)
+        self.assertGreater(joints[2].pos, 0)
+
 
 if __name__ == "__main__":
     unittest.main()

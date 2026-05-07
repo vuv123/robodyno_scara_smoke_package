@@ -121,6 +121,14 @@ class WebotsAdapterTest(unittest.TestCase):
         self.assertIn(slider._input_pos, targets)
         self.assertEqual(slider.get_pos(), 0.123)
 
+    def test_linear_slider_velocity_commands_are_absolute_and_idempotent(self):
+        webots = FakeWebots()
+        slider = WebotsLinearSlider(webots, 0x10, max_vel=0.05)
+        slider.position_track_mode(-0.07)
+        slider.position_track_mode(0.07)
+        slider.set_max_vel(-0.11)
+        self.assertEqual(webots.robot.devices["0x10::slider"].velocities[-3:], [0.07, 0.07, 0.11])
+
 
 if __name__ == "__main__":
     unittest.main()

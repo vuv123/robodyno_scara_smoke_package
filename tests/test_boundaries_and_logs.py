@@ -86,6 +86,23 @@ class BoundaryAndLogTest(unittest.TestCase):
             with self.subTest(target=target):
                 self.assertLess(max(errors), 0.09)
 
+    def test_scara_log_errors_converge_for_each_target(self):
+        if not SCARA_LOG.exists():
+            self.skipTest("run_webots_smoke has not produced a log yet")
+        lines = SCARA_LOG.read_text(encoding="utf-8").splitlines()
+        errors_by_target = {}
+        for line in lines:
+            match = re.search(r"target=(\d+) step=\d+ rc=0 .* errors=(\[[^\]]+\])", line)
+            if match:
+                errors_by_target.setdefault(int(match.group(1)), []).append(max(ast.literal_eval(match.group(2))))
+
+        self.assertEqual(set(errors_by_target), {0, 1, 2})
+        for target, errors in errors_by_target.items():
+            with self.subTest(target=target):
+                self.assertGreaterEqual(len(errors), 2)
+                self.assertLess(errors[-1], errors[0])
+                self.assertLess(min(errors[-3:]), 0.09)
+
     def test_proto_smoke_log_has_no_errors(self):
         if not PROTO_LOG.exists():
             self.skipTest("run_webots_proto_smoke has not produced a log yet")

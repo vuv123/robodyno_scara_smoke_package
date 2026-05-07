@@ -100,6 +100,27 @@ class WebotsAdapterTest(unittest.TestCase):
         self.assertEqual([joint.type for joint in joints[1:]], ["ROBODYNO_PRO_01B", "ROBODYNO_PRO_01B", "ROBODYNO_PLUS_P12"])
         self.assertEqual([joint.filter_modes for joint in joints[1:]], [[8], [8], [8]])
 
+    def test_linear_slider_concurrent_commands_keep_valid_target_and_feedback(self):
+        webots = FakeWebots()
+        slider = WebotsLinearSlider(webots, 0x10, max_vel=0.05)
+        targets = [-0.01, -0.02, 0.03, 0.0, 0.04]
+
+        def command_and_step(target):
+            slider.set_pos(target)
+            slider.step()
+
+        threads = [threading.Thread(target=command_and_step, args=(target,)) for target in targets]
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join()
+
+        positions = webots.robot.devices["0x10::slider"].positions
+        self.assertGreaterEqual(len(positions), len(targets))
+        self.assertIn(positions[-1], targets)
+        self.assertIn(slider._input_pos, targets)
+        self.assertEqual(slider.get_pos(), 0.123)
+
 
 if __name__ == "__main__":
     unittest.main()

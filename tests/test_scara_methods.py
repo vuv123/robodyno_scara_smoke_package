@@ -109,6 +109,33 @@ class ScaraMethodCoverageTest(unittest.TestCase):
         for actual, expected in zip(pose_after, target_pose):
             self.assertLess(abs(actual - expected), 1e-9)
 
+    def test_joint_space_interpolated_motion_generates_smooth_steps(self):
+        scara, joints = self.make_scara()
+        target = [0.04, -0.35, 0.55, -0.25]
+        with patch("robodyno.robots.four_dof_scara_robot.four_dof_scara_robot.time.sleep", return_value=None):
+            scara.joint_space_interpolated_motion(target, duration=0.5)
+
+        command_lengths = {len(joint.commands) for joint in joints}
+        self.assertEqual(len(command_lengths), 1)
+        self.assertGreater(command_lengths.pop(), 2)
+        for joint, expected in zip(joints, target):
+            self.assertAlmostEqual(joint.commands[-1], expected)
+            deltas = [abs(after - before) for before, after in zip(joint.commands, joint.commands[1:])]
+            self.assertTrue(all(delta <= abs(expected) for delta in deltas))
+
+    def test_cartesian_motion_preserves_pose_across_both_hand_solutions(self):
+        scara, joints = self.make_scara()
+        target_axes = (-0.01, 0.35, -0.55, 0.2)
+        target_pose = scara.forward_kinematics(*target_axes)
+
+        with patch("robodyno.robots.four_dof_scara_robot.four_dof_scara_robot.time.sleep", return_value=None):
+            scara.cartesian_space_interpolated_motion(*target_pose, hand_coordinate=False, duration=0)
+
+        pose_after = scara.forward_kinematics(*[joint.pos for joint in joints])
+        for actual, expected in zip(pose_after, target_pose):
+            self.assertLess(abs(actual - expected), 1e-9)
+        self.assertLess(joints[2].pos, 0)
+
 
 if __name__ == "__main__":
     unittest.main()

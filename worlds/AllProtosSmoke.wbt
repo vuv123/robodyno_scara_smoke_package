@@ -1,0 +1,96 @@
+#VRML_SIM R2023b utf8
+
+EXTERNPROTO "../protos/robodyno/camera/CameraBracket.proto"
+EXTERNPROTO "../protos/robodyno/camera/RobodynoCamera.proto"
+EXTERNPROTO "../protos/robodyno/gripper/ROBOT_HAND.proto"
+EXTERNPROTO "../protos/robodyno/joints/Pro_JP12.proto"
+EXTERNPROTO "../protos/robodyno/joints/Pro_JP44.proto"
+EXTERNPROTO "../protos/robodyno/objects/ArmBase.proto"
+EXTERNPROTO "../protos/robodyno/objects/BaseBoard.proto"
+EXTERNPROTO "../protos/robodyno/objects/CylinderConnector.proto"
+EXTERNPROTO "../protos/robodyno/objects/DeltaArmLink.proto"
+EXTERNPROTO "../protos/robodyno/objects/DeltaBase.proto"
+EXTERNPROTO "../protos/robodyno/objects/DeltaEnd.proto"
+EXTERNPROTO "../protos/robodyno/objects/DeltaRodLink.proto"
+EXTERNPROTO "../protos/robodyno/objects/Frame.proto"
+EXTERNPROTO "../protos/robodyno/objects/PipeConnector.proto"
+EXTERNPROTO "../protos/robodyno/objects/PipeLink85.proto"
+EXTERNPROTO "../protos/robodyno/objects/SliderBase.proto"
+EXTERNPROTO "../protos/robodyno/objects/SliderBracket.proto"
+EXTERNPROTO "../protos/robodyno/objects/TBracket.proto"
+EXTERNPROTO "../protos/robodyno/slider/SliderModule.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  position 1.2 -2.0 1.5
+  orientation 0.35 0.88 0.31 4.1
+}
+Robot {
+  children [
+    CameraBracket {
+      translation 0.00 0.00 0.05
+    }
+    RobodynoCamera {
+      translation 0.35 0.00 0.05
+      name "robodyno_camera_smoke"
+      cameraName "camera_smoke"
+    }
+    ROBOT_HAND {
+      translation 0.70 0.00 0.05
+      motor_id "0x32"
+    }
+    Pro_JP12 {
+      translation 1.05 0.00 0.05
+      motor_id "0x33"
+    }
+    Pro_JP44 {
+      translation 1.40 0.00 0.05
+      motor_id "0x34"
+    }
+    ArmBase {
+      translation 0.00 0.35 0.05
+    }
+    BaseBoard {
+      translation 0.35 0.35 0.05
+    }
+    CylinderConnector {
+      translation 0.70 0.35 0.05
+    }
+    DeltaArmLink {
+      translation 1.05 0.35 0.05
+    }
+    DeltaBase {
+      translation 1.40 0.35 0.05
+    }
+    DeltaEnd {
+      translation 0.00 0.70 0.05
+    }
+    DeltaRodLink {
+      translation 0.35 0.70 0.05
+    }
+    Frame {
+      translation 0.70 0.70 0.05
+    }
+    PipeConnector {
+      translation 1.05 0.70 0.05
+    }
+    PipeLink85 {
+      translation 1.40 0.70 0.05
+    }
+    SliderBase {
+      translation 0.00 1.05 0.05
+    }
+    SliderBracket {
+      translation 0.35 1.05 0.05
+    }
+    TBracket {
+      translation 0.70 1.05 0.05
+    }
+    SliderModule {
+      translation 1.05 1.05 0.05
+      motor_id "0x42"
+    }
+  ]
+  controller "void"
+}

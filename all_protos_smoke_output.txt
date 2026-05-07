@@ -1,0 +1,31 @@
+Critical: Failed to load opengl32sw (找不到指定的模块。)
+Warning: Failed to load and resolve WGL/OpenGL functions
+Warning: Software OpenGL failed. Falling back to system OpenGL.
+WARNING: Robot "robot" > RobodynoCamera "robodyno_camera_smoke": The controller has not been set.
+WARNING: Robot "robot": The controller directory has not been found, searched the following locations:
+D:/smoke/robodyno_scara_smoke_package/controllers/void/
+D:/webots/Webots/projects/default/controllers/void/
+D:/webots/Webots/resources/projects/controllers/void/
+WARNING: Robot "robot" > Pro_JP12 "Pro_JP12_0x33" > Pose  > CadShape : Mesh 'Shape_IndexedFaceSet_024-mesh' has more than 100'000 vertices, it is recommended to reduce the number of vertices.
+WARNING: Robot "robot" > Pro_JP12 "Pro_JP12_0x33" > Pose  > CadShape : Mesh 'Shape_IndexedFaceSet_016-mesh' has more than 100'000 vertices, it is recommended to reduce the number of vertices.
+WARNING: Robot "robot" > Pro_JP12 "Pro_JP12_0x33" > Pose  > HingeJoint "solid" > Solid "solid" > CadShape : Mesh 'Shape_IndexedFaceSet_004-mesh' has more than 100'000 vertices, it is recommended to reduce the number of vertices.
+WARNING: Robot "robot" > Pro_JP44 "Pro_JP44_0x34" > Pose  > CadShape : Mesh 'Shape_IndexedFaceSet_024-mesh' has more than 100'000 vertices, it is recommended to reduce the number of vertices.
+WARNING: Robot "robot" > Pro_JP44 "Pro_JP44_0x34" > Pose  > CadShape : Mesh 'Shape_IndexedFaceSet_016-mesh' has more than 100'000 vertices, it is recommended to reduce the number of vertices.
+WARNING: Robot "robot" > Pro_JP44 "Pro_JP44_0x34" > Pose  > HingeJoint "solid" > Solid "solid" > CadShape : Mesh 'Shape_IndexedFaceSet_004-mesh' has more than 100'000 vertices, it is recommended to reduce the number of vertices.
+WARNING: Robot "robot" > TBracket "TBracket" > Pose  > CadShape : Mesh 'Shape_IndexedFaceSet-mesh' has more than 100'000 vertices, it is recommended to reduce the number of vertices.
+WARNING: Robot "robot" > SliderModule "Slider_Module_0x42" > Pose  > CadShape : Mesh 'Shape_IndexedFaceSet-mesh' has more than 100'000 vertices, it is recommended to reduce the number of vertices.
+WARNING: Robot "robot" > SliderModule "Slider_Module_0x42" > Pose  > CadShape : Mesh 'Shape_IndexedFaceSet_041-mesh' has more than 100'000 vertices, it is recommended to reduce the number of vertices.
+WARNING: Robot "robot" > SliderModule "Slider_Module_0x42" > Pose  > Pro_JP44 "Pro_JP44_0x42" > Pose  > CadShape : Mesh 'Shape_IndexedFaceSet_024-mesh' has more than 100'000 vertices, it is recommended to reduce the number of vertices.
+WARNING: Robot "robot" > SliderModule "Slider_Module_0x42" > Pose  > Pro_JP44 "Pro_JP44_0x42" > Pose  > CadShape : Mesh 'Shape_IndexedFaceSet_016-mesh' has more than 100'000 vertices, it is recommended to reduce the number of vertices.
+WARNING: Robot "robot" > SliderModule "Slider_Module_0x42" > Pose  > Pro_JP44 "Pro_JP44_0x42" > Pose  > HingeJoint "solid" > Solid "solid" > CadShape : Mesh 'Shape_IndexedFaceSet_004-mesh' has more than 100'000 vertices, it is recommended to reduce the number of vertices.
+WARNING: Robot "robot" > Pro_JP12 "Pro_JP12_0x33" > Pose  > HingeJoint "solid" > RotationalMotor "0x33::motor": Motor '0x33::motor' uses the coupled motor name structure but does not have any siblings.
+WARNING: Robot "robot" > Pro_JP44 "Pro_JP44_0x34" > Pose  > HingeJoint "solid" > RotationalMotor "0x34::motor": Motor '0x34::motor' uses the coupled motor name structure but does not have any siblings.
+WARNING: Robot "robot" > DeltaArmLink "DeltaArmLink": Webots has detected that this solid is light and oblong according to its inertia matrix. This belongs in the physics edge cases, and can imply weird physical results. Increasing the weight of the object or reducing its eccentricity are recommended.
+WARNING: Robot "robot" > DeltaRodLink "DeltaRodLink": Webots has detected that this solid is light and oblong according to its inertia matrix. This belongs in the physics edge cases, and can imply weird physical results. Increasing the weight of the object or reducing its eccentricity are recommended.
+WARNING: Robot "robot" > SliderModule "Slider_Module_0x42" > Pose  > Pro_JP44 "Pro_JP44_0x42" > Pose  > HingeJoint "solid" > RotationalMotor "0x42::motor": When using coupled motors, velocity limits must be consistent across devices. Adjusted 'maxVelocity' from 10 to 0.0432 for motor '0x42::motor'.
+WARNING: : Could not find the controller directory.
+Starting the <generic> controller instead.
+INFO: <generic>: Starting controller: D:\webots\Webots\resources\projects\controllers\generic\generic.exe
+WARNING: void: Could not find the controller directory.
+Starting the <generic> controller instead.
+INFO: <generic>: Starting controller: D:\webots\Webots\resources\projects\controllers\generic\generic.exe

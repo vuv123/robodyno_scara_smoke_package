@@ -1,0 +1,38 @@
+#VRML_SIM R2023b utf8
+# license: Creative Commons Attribution 4.0 International License.
+# license url: https://creativecommons.org/licenses/by/4.0/legalcode
+
+PROTO RobodynoCamera [
+  field SFVec3f          translation           0 0 0
+  field SFRotation   rotation                 0 1 0 0
+  field SFString        name                      "robodyno_camera"
+  field SFString        cameraName              "camera"
+  field SFString        controller              ""
+]
+{
+	Robot {
+		translation IS translation
+		rotation IS rotation
+		name IS name
+		children [
+            Camera {
+              translation 0 0 0
+              rotation 0 1 0 1.5708
+              name IS cameraName
+              width 640
+              height 480
+              recognition Recognition {
+                frameThickness 2
+                segmentation TRUE
+              }
+            }
+            CadShape {
+                url [
+                "shapes/camera.dae"
+                ]
+                castShadows FALSE
+            }
+        ]
+        controller IS controller
+	}
+}

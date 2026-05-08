@@ -189,6 +189,34 @@ class InstalledRobodynoModelTest(unittest.TestCase):
                 assert_finite_sequence(self, ik)
                 assert_sequences_close(self, robot.forward_kinematics(ik), fk, tolerance=1e-6)
 
+    @unittest.expectedFailure
+    def test_six_dof_collaborative_high_angle_pose_roundtrip_known_issue(self):
+        robot = SixDoFCollabRobot(
+            FakeJoint(),
+            FakeJoint(),
+            FakeJoint(),
+            FakeJoint(),
+            FakeJoint(),
+            FakeJoint(),
+            0.10,
+            0.12,
+            0.12,
+            0.10,
+            0.08,
+            0.06,
+        )
+        axes = [
+            -0.9957851743690496,
+            5.6261337907097015,
+            5.937147395643123,
+            -5.157427632905599,
+            -0.7966032724536909,
+            3.028680854932075,
+        ]
+        fk = robot.forward_kinematics(axes)
+        ik = robot.inverse_kinematics(*fk)
+        assert_sequences_close(self, robot.forward_kinematics(ik), fk, tolerance=1e-6)
+
     def test_init_and_set_joint_pos_touch_expected_joints_only(self):
         joints = [FakeJoint() for _ in range(4)]
         robot = FourDoFPallet(*joints, 0.12, 0.10, 0.10, 0.04)

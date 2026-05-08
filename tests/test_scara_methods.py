@@ -65,6 +65,24 @@ class ScaraMethodCoverageTest(unittest.TestCase):
         self.assertAlmostEqual(joints[2].pos, 0.77)
         self.assertAlmostEqual(scara.get_joints_poses()[2], 0.5)
 
+    def test_get_joints_poses_succeeds_on_last_retry(self):
+        class FlakyJoint(RecordingJoint):
+            def __init__(self, pos=0.0):
+                super().__init__(pos)
+                self.calls = 0
+
+            def get_pos(self, timeout=None):
+                del timeout
+                self.calls += 1
+                if self.calls < 5:
+                    return None
+                return self.pos
+
+        joints = [FlakyJoint(pos) for pos in (0.1, 0.2, 0.3, 0.4)]
+        scara = create_scara(joints)
+        self.assertEqual(scara.get_joints_poses(), [0.1, 0.2, 0.3, 0.4])
+        self.assertTrue(all(joint.calls == 5 for joint in joints))
+
     def test_get_joints_poses_retries_and_fails(self):
         class MissingJoint(RecordingJoint):
             def get_pos(self, timeout=None):
@@ -73,6 +91,16 @@ class ScaraMethodCoverageTest(unittest.TestCase):
         scara = create_scara([MissingJoint() for _ in range(4)])
         with self.assertRaises(RuntimeError):
             scara.get_joints_poses()
+
+    def test_init_can_be_reapplied_after_motion(self):
+        scara, joints = self.make_scara((0.2, -0.1, 0.3, -0.4))
+        scara.init([0.0, 0.1, -0.2, 0.3])
+        scara.set_joint_pos(1, -0.35)
+        scara.set_joint_pos(3, 0.45)
+        scara.init([0.05, -0.05, 0.1, -0.15])
+        self.assertEqual([round(value, 10) for value in scara.get_joints_poses()], [0.05, -0.05, 0.1, -0.15])
+        self.assertAlmostEqual(joints[1].pos, -0.55)
+        self.assertAlmostEqual(joints[3].pos, -0.25)
 
     def test_inverse_kinematics_left_and_right_hands(self):
         scara, _ = self.make_scara()
@@ -151,6 +179,21 @@ class ScaraMethodCoverageTest(unittest.TestCase):
         for actual, expected in zip(final_pose, right_pose):
             self.assertLess(abs(actual - expected), 1e-9)
         self.assertGreater(joints[2].pos, 0)
+
+    def test_constructor_stores_end_effector_object(self):
+        sentinel = object()
+        scara = create_scara([RecordingJoint() for _ in range(4)])
+        self.assertIsNone(scara.end_effector)
+        robot = scara.__class__(
+            *scara.joints,
+            scara.d1,
+            scara.a1,
+            scara.a2,
+            scara.a3,
+            scara.d4,
+            sentinel,
+        )
+        self.assertIs(robot.end_effector, sentinel)
 
 
 if __name__ == "__main__":

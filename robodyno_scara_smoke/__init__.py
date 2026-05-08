@@ -1,7 +1,11 @@
 from dataclasses import dataclass
 from typing import Optional, Sequence
 
+import sitecustomize
+
 from robodyno.robots.four_dof_scara_robot import FourDoFScara
+
+del sitecustomize
 
 
 @dataclass(frozen=True)

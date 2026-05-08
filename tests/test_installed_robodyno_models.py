@@ -1,3 +1,4 @@
+import sitecustomize
 import itertools
 import unittest
 from math import isclose, isfinite
@@ -63,6 +64,13 @@ class InstalledRobodynoModelTest(unittest.TestCase):
         ik = robot.inverse_kinematics(*fk)
         assert_finite_sequence(self, fk)
         assert_finite_sequence(self, ik)
+
+    def test_three_dof_palletizing_asymmetric_pose_roundtrip(self):
+        robot = ThreeDoFPallet(FakeJoint(), FakeJoint(), FakeJoint(), 0.12, 0.10, 0.10, 0.04)
+        axes = [-2.6262193309662463, 1.7077827688478502, -0.8938803568395368]
+        fk = robot.forward_kinematics(axes)
+        ik = robot.inverse_kinematics(*fk)
+        assert_sequences_close(self, robot.forward_kinematics(ik), fk, tolerance=1e-9)
 
     def test_four_dof_palletizing_fk_ik_roundtrip(self):
         robot = FourDoFPallet(FakeJoint(), FakeJoint(), FakeJoint(), FakeJoint(), 0.12, 0.10, 0.10, 0.04)
@@ -144,6 +152,13 @@ class InstalledRobodynoModelTest(unittest.TestCase):
                 assert_finite_sequence(self, ik)
                 assert_sequences_close(self, robot.forward_kinematics(ik), fk)
 
+    def test_three_dof_delta_asymmetric_pose_roundtrip(self):
+        robot = ThreeDoFDelta(FakeJoint(), FakeJoint(), FakeJoint(), 0.12, 0.28, 0.08, 0.03)
+        axes = [0.07154808037361648, 0.36703725941325915, -0.3218783761687096]
+        fk = robot.forward_kinematics(axes)
+        ik = robot.inverse_kinematics(*fk)
+        assert_sequences_close(self, robot.forward_kinematics(ik), fk, tolerance=1e-9)
+
     def test_six_dof_collaborative_pose_batch_roundtrip(self):
         robot = SixDoFCollabRobot(
             FakeJoint(),
@@ -172,6 +187,33 @@ class InstalledRobodynoModelTest(unittest.TestCase):
                 assert_finite_sequence(self, fk)
                 assert_finite_sequence(self, ik)
                 assert_sequences_close(self, robot.forward_kinematics(ik), fk, tolerance=1e-6)
+
+    def test_six_dof_collaborative_high_angle_pose_roundtrip(self):
+        robot = SixDoFCollabRobot(
+            FakeJoint(),
+            FakeJoint(),
+            FakeJoint(),
+            FakeJoint(),
+            FakeJoint(),
+            FakeJoint(),
+            0.10,
+            0.12,
+            0.12,
+            0.10,
+            0.08,
+            0.06,
+        )
+        axes = [
+            -0.9957851743690496,
+            5.6261337907097015,
+            5.937147395643123,
+            -5.157427632905599,
+            -0.7966032724536909,
+            3.028680854932075,
+        ]
+        fk = robot.forward_kinematics(axes)
+        ik = robot.inverse_kinematics(*fk)
+        assert_sequences_close(self, robot.forward_kinematics(ik), fk, tolerance=1e-6)
 
     def test_init_and_set_joint_pos_touch_expected_joints_only(self):
         joints = [FakeJoint() for _ in range(4)]

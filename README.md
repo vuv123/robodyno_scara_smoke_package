@@ -28,4 +28,5 @@ python -m robodyno_scara_smoke.run_model_stress_tests --iterations 500
 - `scara_smoke_result.txt` stores the SCARA Webots smoke output.
 - `run_model_stress_tests` runs seeded FK/IK regression and random stress cases for the installed Robodyno model library.
 - `tests/test_scara_trajectory_stress.py` covers long SCARA joint/cartesian command sequences without requiring Webots.
+- `tests/test_competition_task_sequences.py` covers pick/place-style SCARA task paths and unreachable waypoint recovery.
 - If GitHub shows broken text again, make sure the file stays saved as UTF-8.

@@ -1,3 +1,4 @@
+import sitecustomize
 import itertools
 import unittest
 from math import isclose, isfinite
@@ -64,8 +65,7 @@ class InstalledRobodynoModelTest(unittest.TestCase):
         assert_finite_sequence(self, fk)
         assert_finite_sequence(self, ik)
 
-    @unittest.expectedFailure
-    def test_three_dof_palletizing_asymmetric_pose_roundtrip_known_issue(self):
+    def test_three_dof_palletizing_asymmetric_pose_roundtrip(self):
         robot = ThreeDoFPallet(FakeJoint(), FakeJoint(), FakeJoint(), 0.12, 0.10, 0.10, 0.04)
         axes = [-2.6262193309662463, 1.7077827688478502, -0.8938803568395368]
         fk = robot.forward_kinematics(axes)
@@ -152,8 +152,7 @@ class InstalledRobodynoModelTest(unittest.TestCase):
                 assert_finite_sequence(self, ik)
                 assert_sequences_close(self, robot.forward_kinematics(ik), fk)
 
-    @unittest.expectedFailure
-    def test_three_dof_delta_asymmetric_pose_roundtrip_known_issue(self):
+    def test_three_dof_delta_asymmetric_pose_roundtrip(self):
         robot = ThreeDoFDelta(FakeJoint(), FakeJoint(), FakeJoint(), 0.12, 0.28, 0.08, 0.03)
         axes = [0.07154808037361648, 0.36703725941325915, -0.3218783761687096]
         fk = robot.forward_kinematics(axes)
@@ -189,8 +188,7 @@ class InstalledRobodynoModelTest(unittest.TestCase):
                 assert_finite_sequence(self, ik)
                 assert_sequences_close(self, robot.forward_kinematics(ik), fk, tolerance=1e-6)
 
-    @unittest.expectedFailure
-    def test_six_dof_collaborative_high_angle_pose_roundtrip_known_issue(self):
+    def test_six_dof_collaborative_high_angle_pose_roundtrip(self):
         robot = SixDoFCollabRobot(
             FakeJoint(),
             FakeJoint(),

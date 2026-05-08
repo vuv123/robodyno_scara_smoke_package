@@ -64,6 +64,14 @@ class InstalledRobodynoModelTest(unittest.TestCase):
         assert_finite_sequence(self, fk)
         assert_finite_sequence(self, ik)
 
+    @unittest.expectedFailure
+    def test_three_dof_palletizing_asymmetric_pose_roundtrip_known_issue(self):
+        robot = ThreeDoFPallet(FakeJoint(), FakeJoint(), FakeJoint(), 0.12, 0.10, 0.10, 0.04)
+        axes = [-2.6262193309662463, 1.7077827688478502, -0.8938803568395368]
+        fk = robot.forward_kinematics(axes)
+        ik = robot.inverse_kinematics(*fk)
+        assert_sequences_close(self, robot.forward_kinematics(ik), fk, tolerance=1e-9)
+
     def test_four_dof_palletizing_fk_ik_roundtrip(self):
         robot = FourDoFPallet(FakeJoint(), FakeJoint(), FakeJoint(), FakeJoint(), 0.12, 0.10, 0.10, 0.04)
         axes = [0.1, 0.2, -0.1, 0.3]

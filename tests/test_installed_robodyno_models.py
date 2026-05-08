@@ -144,6 +144,14 @@ class InstalledRobodynoModelTest(unittest.TestCase):
                 assert_finite_sequence(self, ik)
                 assert_sequences_close(self, robot.forward_kinematics(ik), fk)
 
+    @unittest.expectedFailure
+    def test_three_dof_delta_asymmetric_pose_roundtrip_known_issue(self):
+        robot = ThreeDoFDelta(FakeJoint(), FakeJoint(), FakeJoint(), 0.12, 0.28, 0.08, 0.03)
+        axes = [0.07154808037361648, 0.36703725941325915, -0.3218783761687096]
+        fk = robot.forward_kinematics(axes)
+        ik = robot.inverse_kinematics(*fk)
+        assert_sequences_close(self, robot.forward_kinematics(ik), fk, tolerance=1e-9)
+
     def test_six_dof_collaborative_pose_batch_roundtrip(self):
         robot = SixDoFCollabRobot(
             FakeJoint(),
